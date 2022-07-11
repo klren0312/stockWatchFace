@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.palette.graphics.Palette
 import com.zzes.stock2.beans.SinaStockBean
 import com.zzes.stock2.beans.SinaStockBeanItem
+import com.zzes.stock2.beans.WatchFaceData
 import okhttp3.*
 import java.io.IOException
 import java.lang.ref.WeakReference
@@ -56,7 +57,6 @@ private const val STOCK_MSG_UPDATE = 1
  */
 
 class MyWatchFace : CanvasWatchFaceService() {
-
     companion object {
         private var stockData = SinaStockBean()
     }
@@ -257,6 +257,8 @@ class MyWatchFace : CanvasWatchFaceService() {
         }
         var time = 1
         override fun onDraw(canvas: Canvas, bounds: Rect) {
+            val watchFaceData = EditorActivity.watchFaceData
+            Log.d("test", watchFaceData.stockCodes)
             val now = System.currentTimeMillis()
             mCalendar.timeInMillis = now
 

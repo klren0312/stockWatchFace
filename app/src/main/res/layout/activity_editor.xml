@@ -43,7 +43,7 @@
 
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/titleText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
@@ -67,15 +67,15 @@
             android:hint="@string/refreshText"
             android:inputType="number"
             android:minHeight="48dp"
-            app:layout_constraintBottom_toTopOf="@+id/editTextTextMultiLine"
+            app:layout_constraintBottom_toTopOf="@+id/stockCodes"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView"
+            app:layout_constraintTop_toBottomOf="@+id/titleText"
             tools:ignore="TouchTargetSizeCheck" />
 
         <EditText
-            android:id="@+id/editTextTextMultiLine"
+            android:id="@+id/stockCodes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:autofillHints=""
@@ -83,20 +83,21 @@
             android:gravity="start|top"
             android:hint="@string/stockText"
             android:inputType="textMultiLine"
-            android:minHeight="200dp"
-            app:layout_constraintBottom_toTopOf="@+id/button"
+            android:minHeight="100dp"
+            app:layout_constraintBottom_toTopOf="@+id/saveBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/saveBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/saveBtnText"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            tools:ignore="TouchTargetSizeCheck" />
+            tools:ignore="TouchTargetSizeCheck"
+            android:onClick="saveHandler"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
 
