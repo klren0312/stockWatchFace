@@ -3,6 +3,7 @@ package com.zzes.stock2
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.zzes.stock2.beans.SinaStockBean
 import com.zzes.stock2.beans.WatchFaceData
@@ -36,7 +37,9 @@ class EditorActivity : ComponentActivity()  {
         val stockCodes = stockCodeText.text.toString()
 
         watchFaceData.refreshSecond = refreshSecond
-        watchFaceData.stockCodes = stockCodes
+        watchFaceData.stockCodes = stockCodes.trim().lowercase()
+        Toast.makeText(applicationContext, "已保存, 请返回等待数据刷新", Toast.LENGTH_SHORT)
+            .show()
 
     }
 }

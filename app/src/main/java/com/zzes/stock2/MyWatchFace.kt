@@ -142,15 +142,6 @@ class MyWatchFace : CanvasWatchFaceService() {
             mBackgroundPaint = Paint().apply {
                 color = Color.BLACK
             }
-            mBackgroundBitmap =
-                BitmapFactory.decodeResource(resources, R.drawable.watchface_service_bg)
-
-            /* Extracts colors from background image to improve watchface style. */
-            Palette.from(mBackgroundBitmap).generate {
-                it?.let {
-                    updateWatchHandStyle()
-                }
-            }
         }
 
         private fun initializeWatchFace() {
@@ -250,7 +241,7 @@ class MyWatchFace : CanvasWatchFaceService() {
                 WatchFaceService.TAP_TYPE_TAP ->
                     // The user has completed the tap gesture.
                     // TODO: Add code to handle the tap gesture.
-                    Toast.makeText(applicationContext, R.string.message, Toast.LENGTH_SHORT)
+                    Toast.makeText(applicationContext, "别以为点了就能刷新哈 小子", Toast.LENGTH_SHORT)
                         .show()
             }
             invalidate()
@@ -258,15 +249,17 @@ class MyWatchFace : CanvasWatchFaceService() {
         var time = 1
         override fun onDraw(canvas: Canvas, bounds: Rect) {
             val watchFaceData = EditorActivity.watchFaceData
-            Log.d("test", watchFaceData.stockCodes)
+            val stockCodes = watchFaceData.stockCodes
+            val refreshSecond = watchFaceData.refreshSecond
+
             val now = System.currentTimeMillis()
             mCalendar.timeInMillis = now
 
             drawBackground(canvas)
             drawWatchFace(canvas)
 
-            if (time % 20 == 0) {
-                getSinaStockCata("sh000001,sz399001,sz399006,sh000688")
+            if (time % refreshSecond == 0) {
+                getSinaStockData(stockCodes)
                 time = 1
             } else {
                 time += 1
@@ -281,14 +274,14 @@ class MyWatchFace : CanvasWatchFaceService() {
         private fun drawWatchFace(canvas: Canvas) {
             var cd: Calendar = Calendar.getInstance()
             canvas.save()
-            mStock1Paint.textSize = 20f
+            mStock1Paint.textSize = 24f
             mStock1Paint.textAlign = Paint.Align.CENTER
-            mStock1Paint.color = Color.parseColor("#873800")
+            mStock1Paint.color = Color.parseColor("#d4380d")
             Log.d("Calendar", Calendar.DAY_OF_WEEK.toString())
             var timeStr = addZero(mCalendar.get(Calendar.HOUR_OF_DAY)) + ":" + addZero(mCalendar.get(Calendar.MINUTE))
-            canvas.drawText(timeStr, mCenterX, mCenterY / 7f, mStock1Paint)
-            var dateStr = cd.get(Calendar.YEAR).toString() + "年" + (cd.get(Calendar.MONTH) + 1) + "月" + cd.get(Calendar.DATE) + "日"
-            canvas.drawText(dateStr, mCenterX, mCenterY / 4f, mStock1Paint)
+            canvas.drawText(timeStr, mCenterX, mCenterY / 3f, mStock1Paint)
+            var dateStr = cd.get(Calendar.YEAR).toString() + "." + (cd.get(Calendar.MONTH) + 1) + "." + cd.get(Calendar.DATE)
+            canvas.drawText(dateStr, mCenterX, mCenterY / 5f, mStock1Paint)
             canvas.restore()
 
             if (!stockData.isEmpty()) {
@@ -297,9 +290,9 @@ class MyWatchFace : CanvasWatchFaceService() {
                     canvas.save()
                     mStock1Paint.textAlign = Paint.Align.LEFT
                     if (it.currentChange.toDouble() > 0) {
-                        mStock1Paint.color = Color.parseColor("#820014")
+                        mStock1Paint.color = Color.parseColor("#cf1322")
                     } else {
-                        mStock1Paint.color = Color.parseColor("#135200")
+                        mStock1Paint.color = Color.parseColor("#389e0d")
                     }
                     Log.d("Height", (mCenterY / 8).toString())
                     canvas.drawText("${it.name}  ${it.current}  ${it.percent}%", mCenterX / 3f , mCenterY / 2f + stockIndex * (mCenterY / 7), mStock1Paint)
@@ -321,13 +314,18 @@ class MyWatchFace : CanvasWatchFaceService() {
         /**
          * 请求新浪股票接口
          */
-        private fun getSinaStockCata(stockCode: String) {
+        private fun getSinaStockData(stockCode: String) {
             val TAG = "OKHTTP"
             var stockCodeArr: List<String> = listOf()
             if (stockCode != "") {
                 stockCodeArr = stockCode.split(",")
-
-                stockCodeArr = stockCodeArr.map { "s_${it}" }
+                stockCodeArr = stockCodeArr.map {
+                    if (it.contains("sz") || it.contains("sh")) {
+                        "s_${it}"
+                    } else {
+                        it
+                    }
+                }
             }
             Log.d(TAG, stockCodeArr.joinToString())
 
@@ -345,7 +343,7 @@ class MyWatchFace : CanvasWatchFaceService() {
                 @Throws(IOException::class)
                 override fun onResponse(call: Call, response: Response) {
                     Log.d(TAG, "response.code():" + response.code)
-                    mStock1Paint.textSize = 24f
+                    mStock1Paint.textSize = 28f
                     mStock1Paint.textAlign = Paint.Align.CENTER
                     mStock1Paint.color = Color.parseColor("#E6A23C")
                     if (response.code === 200) {
